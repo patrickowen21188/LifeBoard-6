@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeBoard</title>
+    
+    <!-- Google Fonts: Nunito -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <!-- Material Symbols (Icons) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js for Profile Tab -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Custom Stylesheets -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="assets/tablet-style.css">
+
+</head>
+<body class="overflow-hidden">
+    
+    <!-- Background elements that change based on time of day -->
+    <img id="background-image" src="images/main_bg.png" alt="Game Background" class="fixed inset-0 w-full h-full object-cover z-[-1]">
+    <div id="background-gradient" class="fixed inset-0 z-[-2]"></div>
+
+
+    <!-- TOP UI CONTAINER -->
+    <header id="top-ui-bar" class="fixed top-0 left-0 right-0 z-50 p-4 lg:p-6 opacity-0">
+        <div class="w-full flex items-end justify-between gap-4">
+
+            <!-- CURRENT AGE DISPLAY -->
+            <div id="age-display-box" class="ui-panel backdrop-blur-sm rounded-full px-4 flex items-center justify-center gap-2 min-w-[150px] lg:min-w-[170px] h-10 lg:h-12">
+                <span class="text-sm text-gray-700 uppercase font-bold">Age</span>
+                <p class="text-lg lg:text-xl font-black text-blue-900 tracking-tighter">
+                    <span id="current-year">15</span>Y <span id="current-month">0</span>M
+                </p>
+            </div>
+
+            <!-- TIMELINE (Hidden on mobile, visible on lg screens and up) -->
+            <div class="ui-panel flex-grow backdrop-blur-sm rounded-full h-7 lg:h-8 relative px-8 hidden lg:flex items-center">
+                <div class="absolute top-0 left-0 h-full rounded-full flex overflow-hidden w-full">
+                    <div class="h-full w-full" style="background: linear-gradient(to right, #F28B82 20%, #FFF59D 60%, #A8E6CF 100%);"></div>
+                </div>
+                <div id="timeline-markers" class="relative w-full h-full"></div>
+            </div>
+
+            <!-- AUDIO CONTROLS -->
+            <div class="ui-panel backdrop-blur-sm rounded-full h-10 lg:h-12 px-4 flex items-center justify-center gap-3">
+                <button id="audio-toggle" class="text-blue-900 hover:text-blue-600 transition-colors">
+                    <span id="volume-on-icon" class="material-symbols-outlined text-xl lg:text-2xl">volume_up</span>
+                    <span id="volume-off-icon" class="material-symbols-outlined text-xl lg:text-2xl hidden">volume_off</span>
+                </button>
+                <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.75" class="align-middle hidden lg:inline-block">
+            </div>
+
+        </div>
+    </header>
+    
+    <!-- MOBILE STATUS HUD -->
+    <div id="mobile-status-hud" class="fixed top-24 left-4 right-4 z-40 lg:hidden opacity-0">
+        <div class="ui-panel rounded-full p-2 flex items-center justify-around">
+            <div id="mobile-hud-wallet" class="flex items-center gap-1 text-sm"><span class="material-symbols-outlined mobile-money-icon">account_balance_wallet</span><span class="font-black mobile-money-value">$0</span></div>
+            <div id="mobile-hud-cashflow" class="flex items-center gap-1 text-sm"><span class="material-symbols-outlined mobile-cashflow-icon">currency_exchange</span><span class="font-black mobile-cashflow-value">$0</span></div>
+            <div id="mobile-hud-wellbeing" class="flex items-center gap-1 text-sm"><span class="material-symbols-outlined mobile-wellbeing-icon">cardiology</span><span class="font-black mobile-wellbeing-value">0</span></div>
+        </div>
+    </div>
+
+
+    <!-- Main Content Wrapper -->
+    <div id="content-wrapper" class="fixed top-32 lg:top-28 bottom-0 left-0 right-0 p-4 lg:p-6">
+        <div class="relative w-full h-full lg:flex lg:gap-6 lg:items-start">
+
+             <!-- Left Column: HUD and Controls (Desktop Only) -->
+            <div class="hidden lg:flex flex-col h-full w-[400px] flex-shrink-0 justify-between">
+                <!-- STATUS HUD (Desktop) -->
+                <div id="status-hud" class="ui-panel rounded-2xl p-4 grid grid-cols-2 gap-x-8 gap-y-4 opacity-0" style="border-width: 4px;">
+                    <div class="space-y-4">
+                        <div id="hud-player" class="flex items-center gap-2 justify-start"><span class="material-symbols-outlined text-3xl">person</span><div><div class="text-sm font-bold text-gray-600">Player</div><span id="player-name" class="font-black text-lg">Player 1</span></div></div>
+                        <div id="hud-wellbeing" class="flex items-center gap-2 justify-start"><span class="material-symbols-outlined text-3xl" id="wellbeing-icon">cardiology</span><div><div class="text-sm font-bold text-gray-600">Well-being</div><span id="wellbeing-value" class="font-black text-lg">0</span></div></div>
+                    </div>
+                    <div class="space-y-4">
+                        <div id="hud-wallet" class="flex items-center gap-2 justify-start"><span class="material-symbols-outlined text-3xl" id="money-icon">account_balance_wallet</span><div><div class="text-sm font-bold text-gray-600">Wallet</div><span id="money-value" class="font-black text-lg">$0</span></div></div>
+                        <div id="hud-cashflow" class="flex items-center gap-2 justify-start"><span class="material-symbols-outlined text-3xl" id="cashflow-icon">currency_exchange</span><div><div class="text-sm font-bold text-gray-600">Cash Flow</div><span id="cashflow-value" class="font-black text-lg">$0</span></div></div>
+                    </div>
+                </div>
+                
+                <!-- CHARACTER IMAGE PLACEHOLDER -->
+                <div id="character-placeholder" class="bg-transparent rounded-2xl flex items-center justify-center opacity-0 overflow-hidden mx-auto w-full">
+                    <div id="character-sprite"></div>
+                </div>
+
+                 <!-- CONTROLS (Desktop) -->
+                <div id="controls-container" class="z-40 flex items-center justify-center gap-4">
+                    <button id="restart-button" class="sfx-button backdrop-blur-sm rounded-full h-16 w-auto px-6 flex items-center justify-center transition-transform opacity-0 bg-red-600/85 hover:bg-red-700/90"><span class="material-symbols-outlined text-white text-4xl">undo</span><span class="ml-2 font-bold text-white whitespace-nowrap">Undo</span></button>
+                    <button id="next-turn-button" class="sfx-button backdrop-blur-sm rounded-full h-16 w-auto px-6 flex items-center justify-center transition-transform opacity-0 bg-green-600/85 hover:bg-green-700/90"><span class="material-symbols-outlined text-white text-4xl">skip_next</span><span id="next-turn-text" class="ml-2 font-bold text-white whitespace-nowrap">Next Turn</span></button>
+                </div>
+            </div>
+
+            <!-- MAIN PANEL (Tablet UI) -->
+            <aside id="main-panel" class="absolute top-1/2 left-1/2 w-full max-w-full h-auto max-h-[calc(100%-8rem)] aspect-[3/4] opacity-0 transform -translate-x-1/2 -translate-y-1/2 lg:static lg:transform-none lg:p-0 lg:flex-grow lg:self-center lg:aspect-[4/3] lg:max-h-full">
+                 <div id="tablet-chassis" class="relative w-full h-full bg-[#212121] rounded-[2rem] p-2.5">
+                    <!-- Decorative elements for the tablet chassis -->
+                    <div class="lg:hidden">
+                        <div class="absolute top-[15%] -right-1 w-1 h-10 bg-gray-900/80 rounded-r-md"></div><div class="absolute top-[25%] -left-1 w-1 h-8 bg-gray-900/80 rounded-l-md"></div><div class="absolute top-[calc(25%+2.5rem)] -left-1 w-1 h-8 bg-gray-900/80 rounded-l-md"></div>
+                    </div>
+                    <div class="hidden lg:block">
+                        <div class="absolute left-8 -top-1 h-1 w-12 bg-gray-900/80 rounded-t-md"></div><div class="absolute left-[20%] -bottom-1 h-1 w-10 bg-gray-900/80 rounded-b-md"></div><div class="absolute left-[calc(20%+3.5rem)] -bottom-1 h-1 w-10 bg-gray-900/80 rounded-b-md"></div>
+                    </div>
+                    <div class="w-full h-full bg-white rounded-[1.5rem] flex flex-col overflow-hidden">
+                       <!-- The tablet's content will be dynamically injected here by tablet-main.js -->
+                       <div id="panel-content" class="flex-grow flex items-center justify-center overflow-y-auto">
+                            <!-- Initial loading state shown before the tablet UI is initialized -->
+                            <div id="loading-indicator" class="text-center w-full max-w-xs p-4">
+                                <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                                <h2 class="text-lg font-bold text-gray-700 mt-4">Loading Content...</h2>
+                                <div class="w-full bg-gray-200 rounded-full h-2.5 mt-2 overflow-hidden"><div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div></div>
+                            </div>
+                            <!-- This is a fallback placeholder, tablet-main.js will replace this content -->
+                            <p id="main-content-placeholder" class="text-center text-gray-500 text-lg hidden">Main content will be loaded here.</p>
+                       </div>
+                   </div>
+                </div>
+            </aside>
+
+             <!-- Mobile Controls -->
+             <div id="mobile-controls-container" class="lg:hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-40 flex items-center justify-center gap-4">
+                <button id="mobile-restart-button" class="sfx-button backdrop-blur-sm rounded-full h-16 w-auto px-4 flex items-center justify-center transition-transform opacity-0 bg-red-600/85 hover:bg-red-700/90"><span class="material-symbols-outlined text-white text-3xl">undo</span><span class="ml-2 font-bold text-white whitespace-nowrap text-sm">Undo</span></button>
+                <button id="mobile-next-turn-button" class="sfx-button backdrop-blur-sm rounded-full h-16 w-auto px-4 flex items-center justify-center transition-transform opacity-0 bg-green-600/85 hover:bg-green-700/90"><span class="material-symbols-outlined text-white text-3xl">skip_next</span><span id="mobile-next-turn-text" class="ml-2 font-bold text-white whitespace-nowrap text-sm">Next Turn</span></button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Howler.js Sound Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+    
+    <!-- Main Game Logic Entry Point -->
+    <!-- This script will import all other necessary JS files, including state.js -->
+    <script type="module" src="main.js"></script>
+    
+</body>
+</html>

@@ -1,0 +1,261 @@
+/* Applying the Nunito font as the default */
+body {
+    font-family: 'Nunito', sans-serif;
+    background-color: #AECBFA; /* Fallback color */
+}
+
+#background-gradient {
+    transition: background 2s ease-in-out;
+}
+.sunrise { background: linear-gradient(to top, #ffecd2 0%, #fcb69f 100%); }
+.noon { background: linear-gradient(to top, #a1c4fd 0%, #c2e9fb 100%); }
+.afternoon { background: linear-gradient(to top, #a1c4fd 0%, #fad0c4 100%); }
+.sunset { background: linear-gradient(to top, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%); }
+.evening { background: linear-gradient(to top, #708090 0%, #304352 100%); }
+.night { background: linear-gradient(to top, #304352 0%, #d7d2cc 100%); }
+
+/* Animation for the top bar sliding in */
+@keyframes slideDown {
+    from { transform: translateY(-150%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Keyframes for the zoom bounce animation on the age box */
+@keyframes zoomBounce {
+    0% { transform: scale(1); }
+    30% { transform: scale(1.1); }
+    60% { transform: scale(0.95); }
+    100% { transform: scale(1); }
+}
+
+/* Keyframes for the pop-in animation on the bottom buttons */
+@keyframes popIn {
+    0% { opacity: 0; transform: scale(0.5); }
+    60% { opacity: 1; transform: scale(1.1); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+/* Keyframes for the main panel intro animation */
+@keyframes panel-intro-mobile {
+    from { opacity: 0; transform: translate(-50%, 150%); }
+    to { opacity: 1; transform: translate(-50%, -50%); }
+}
+@keyframes panel-intro-desktop {
+    from { opacity: 0; transform: translateX(100%); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* --- Notification Animations --- */
+@keyframes slideInUp {
+    from { opacity: 0; transform: translateY(50px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; transform: translateY(20px); }
+}
+.notification {
+    animation: slideInUp 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    width: 350px;
+    max-width: 90vw;
+    cursor: pointer;
+}
+.notification.fade-out {
+    animation: fadeOut 0.5s ease-out forwards;
+}
+.notification.positive { border-color: #22c55e; } /* green-500 */
+.notification.negative { border-color: #ef4444; } /* red-500 */
+
+.notification-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    cursor: pointer;
+    color: #9ca3af; /* gray-400 */
+    background: none;
+    border: none;
+    font-size: 20px;
+    line-height: 1;
+    padding: 2px;
+}
+.notification-close:hover { color: #374151; } /* gray-700 */
+
+/* Class to apply the slide-down animation */
+.slide-down-animation {
+    animation: slideDown 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* Class to apply the zoom bounce animation */
+.zoom-bounce-animation {
+    animation: zoomBounce 0.4s ease-out; /* Adjusted duration for a quicker bounce */
+}
+
+/* Class to apply the pop-in animation */
+.pop-in-animation {
+    animation: popIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* Class to apply the panel intro animation */
+.panel-intro-animation {
+    animation: panel-intro-mobile 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+@media (min-width: 1024px) {
+    .panel-intro-animation {
+        animation-name: panel-intro-desktop;
+    }
+}
+
+/* Custom styles for Material Icons */
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
+}
+
+/* Style for the player's 'run' icon on the timeline */
+#player-icon {
+    transition: left 0.5s ease-in-out;
+}
+
+/* 2.5D "Material" Style for UI Panels */
+.ui-panel {
+    background: linear-gradient(to bottom, rgba(255,255,255,0.95), rgba(240,240,240,0.9));
+    border: 2px solid #174EA6; /* Dark Blue Border */
+    box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.1), inset 0 1px 1px rgba(255,255,255,0.6);
+}
+
+/* Custom style for button hover effect */
+.sfx-button {
+    transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), background-color 0.2s ease-in-out;
+}
+.sfx-button:hover {
+    transform: scale(1.1);
+}
+.sfx-button:active {
+    transform: scale(0.95);
+}
+
+/* Countdown state for the next turn button */
+#next-turn-button.countdown-active, 
+#mobile-next-turn-button.countdown-active {
+    background-color: rgba(251, 196, 0, 0.85) !important; /* Amber/Yellow. !important overrides tailwind */
+}
+#next-turn-button.countdown-active:hover, 
+#mobile-next-turn-button.countdown-active:hover {
+    background-color: rgba(242, 183, 0, 0.9) !important; /* Darker Amber/Yellow */
+}
+
+/* Game Over state for the next turn button */
+#next-turn-button.game-over, 
+#mobile-next-turn-button.game-over {
+    background-color: rgba(107, 114, 128, 0.85) !important; /* gray-500. !important overrides tailwind */
+    pointer-events: none;
+}
+
+
+/* Custom Volume Slider Styling */
+input[type=range] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+    width: 80px; /* Default width for mobile */
+}
+@media (min-width: 1024px) { /* Wider on desktop */
+     input[type=range] {
+        width: 100px;
+    }
+}
+
+input[type=range]:focus {
+    outline: none;
+}
+
+/* Custom Track */
+input[type=range]::-webkit-slider-runnable-track {
+    background: #AECBFA; /* Soft Blue */
+    height: 0.5rem;
+    border-radius: 1rem;
+    border: 1px solid #174EA6; /* Dark Blue */
+}
+input[type=range]::-moz-range-track {
+    background: #AECBFA;
+    height: 0.5rem;
+    border-radius: 1rem;
+    border: 1px solid #174EA6;
+}
+
+/* Custom Thumb */
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    margin-top: -6px; /* Center thumb vertically */
+    background-color: #4285F4; /* Normal Blue */
+    height: 1.25rem;
+    width: 1.25rem;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+    transition: transform 0.1s ease-in-out;
+}
+input[type=range]::-moz-range-thumb {
+    border: none;
+    background-color: #4285F4;
+    height: 1.25rem;
+    width: 1.25rem;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+}
+
+input[type=range]:hover::-webkit-slider-thumb {
+    transform: scale(1.1);
+}
+
+/* Style for the 3-month timeline markers */
+.quarter-marker {
+    position: absolute;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: 1px;
+    height: 4px;
+    background-color: rgba(75, 85, 99, 0.6); /* gray-500 with 60% opacity */
+    border-radius: 9999px;
+}
+
+#character-placeholder {
+    aspect-ratio: 7 / 18;
+    max-width: 210px; /* Controls the max size of the character */
+    width: 100%;
+    margin: auto; /* Centers the element in the available flex space */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#character-sprite {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-image: url('images/chara_m.png');
+    background-size: 300% 100%; /* 3 frames horizontally */
+    background-repeat: no-repeat;
+    background-position: 0% 0%; /* Default to the first frame */
+}
+
+#character-sprite::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('images/chara_m.png');
+    background-size: 300% 100%;
+    background-repeat: no-repeat;
+    background-position: var(--next-sprite-pos, 0% 0%);
+    opacity: var(--next-sprite-opacity, 0);
+    transition: opacity 0.3s ease-in-out;
+}
