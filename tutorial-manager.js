@@ -105,7 +105,8 @@ let nextStepIndexAfterClose = -1;
  */
 function executeStep(stepIndex, forced = false) {
     // Only run if in 'learning' difficulty AND game is in progress
-    if (gameState.difficulty !== 'learning' || gameState.isGameOver) return;
+    const isLearningMode = gameState.chosenDifficulty === 'learning';
+    if (!isLearningMode || gameState.isGameOver) return;
     
     // Check if we are jumping ahead (e.g., from an event trigger) or if it's the expected next step
     if (!forced && stepIndex !== gameState.tutorialStep) return;
@@ -129,7 +130,7 @@ function executeStep(stepIndex, forced = false) {
  */
 export function advanceTutorial() {
     // If the modal was closed, fire the next logical step that was stored.
-    if (gameState.difficulty !== 'learning') return;
+    if (gameState.chosenDifficulty !== 'learning') return;
 
     // If step 3 closed, immediately show step 4 (Fix Wellbeing -> Time to Save)
     if (nextStepIndexAfterClose === 4) {
